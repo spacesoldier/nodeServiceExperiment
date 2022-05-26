@@ -1,0 +1,20 @@
+{
+  "name": "service-experiment",
+  "version": "1.0.0",
+  "description": "a newbie experiment about building a REST service application on Node.js without any specific framework except, maybe, RxJs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spacesoldier/nodeServiceExperiment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spacesoldier/nodeServiceExperiment/issues"
+  },
+  "homepage": "https://github.com/spacesoldier/nodeServiceExperiment#readme"
+}
