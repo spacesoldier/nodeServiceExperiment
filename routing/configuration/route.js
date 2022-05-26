@@ -19,7 +19,7 @@ function emptyCallHandler (input, localContext, globalContext){
 }
 
 function routeBuilder (){
-
+    // route path to handle here
     let callPath;
 
     function location(path){
@@ -27,6 +27,7 @@ function routeBuilder (){
         return this;
     }
 
+    // http method
     let callMethod;
 
     function method(method){
@@ -34,6 +35,7 @@ function routeBuilder (){
         return this;
     }
 
+    // a function or an array of functions which process the request payload
     let callHandling;
 
     function handlers(callHandlers){
