@@ -5,5 +5,5 @@ function RequestHandler(){
 }
 
 module.exports = {
-    handler: RequestHandler
+    RequestHandler
 }

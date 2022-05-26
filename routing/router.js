@@ -1,6 +1,6 @@
 'use strict';
 
-const api = require('./api')
+const {wrapRequest} = require('./api')
 
 // This is a prototype of a router which process the requests
 // to different paths and applies request handlers
@@ -24,8 +24,8 @@ function Router() {
      * @returns {RequestWrapper}
      */
     function handleRequest (rq, rs){
-        let envelope = api.wrapRequest(rq, rs, () => {});
-        console.log(envelope);
+        let envelope = wrapRequest(rq, rs, () => {});
+        console.log(envelope.extractMethod());
     }
 
     return {

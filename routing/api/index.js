@@ -1,12 +1,9 @@
 'use strict'
 
-const wrap = require('./request-wrapper')
-const wrapRequest = wrap.wrapRequest;
-const RequestWrapper = wrap.RequestWrapper;
+const {wrapRequest} = require('./request-wrapper')
 
 
 module.exports = {
-    RequestWrapper,
     wrapRequest
 }
 
