@@ -12,6 +12,13 @@ function Route(routeLocation, callMethod, requestHandler){
     }
 }
 
+/** just an idea of business logic call signature:
+ * @param input Object - the payload which should be processed by the handler
+ * @param localContext Object - an object which can store and probably share/store some data
+ *                              between different handler calls. It could be any aggregates or counters for example
+ * @param globalContext Object - an object which can store and probably share/store some data
+ *                              across the whole application. For example, caches
+ **/
 function emptyCallHandler (input, localContext, globalContext){
     return {
         error: 'not implemented'
