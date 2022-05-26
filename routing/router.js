@@ -24,8 +24,11 @@ function Router() {
      * @returns {RequestWrapper}
      */
     function handleRequest (rq, rs){
-        let envelope = wrapRequest(rq, rs, () => {});
-        console.log(envelope.extractMethod());
+        let envelope = wrapRequest(rq, rs);
+
+        console.log(`Received ${envelope.getMethod()} request ${envelope.requestId()} to ${envelope.getUrl()}`);
+
+        envelope.ok(`hello from router! your ticket is ${envelope.requestId()}`);
     }
 
     return {
