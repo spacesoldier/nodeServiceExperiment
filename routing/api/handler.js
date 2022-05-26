@@ -1,9 +1,9 @@
 'use strict'
 
-function RequestHandler(){
+function requestHandler(){
 
 }
 
 module.exports = {
-    RequestHandler
+    requestHandler
 }

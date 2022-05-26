@@ -1,40 +1,43 @@
 'use strict'
 
+const {routeBuilder} = require('./../routing/configuration')
+
 const mainConfig = {
     port: 80,
-    routes: [
+    endpoints: [
             // serve static content
-            {
-                path: "/",
-                method: "get",
-                handler: () => {}
-            },
+            routeBuilder()
+                    .location("/")
+                    .method("get")
+                    .handlers(() => {})
+                .build(),
 
             // session control: request a new session
-            {
-                path: "/session",
-                method: "get",
-                handler: () => {}
-            },
+            routeBuilder()
+                    .location("/session")
+                    .method("get")
+                    .handlers(() => {})
+                .build(),
             // session control: validate an existing session
-            {
-                path: "session",
-                method: "post",
-                handler: () => {}
-            },
-            // session control: validate an existing session
-            {
-                path: "session",
-                method: "delete",
-                handler: () => {}
-            },
+            routeBuilder()
+                    .location("/session")
+                    .method("post")
+                    .handlers(() => {})
+                .build(),
+
+            // session control: terminate an existing session
+            routeBuilder()
+                    .location("/session")
+                    .method("delete")
+                    .handlers(() => {})
+                .build(),
 
             // receiving events
-            {
-                path: "/event",
-                method: "post",
-                handler: () => {}
-            },
+            routeBuilder()
+                .location("/event")
+                .method("post")
+                .handlers(() => {})
+            .build(),
         ],
 }
 

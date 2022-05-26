@@ -44,7 +44,7 @@ function wrapRequest(rq,rs){
         return rqId;
     }
 
-    function ok(resultMessage){
+    function ok(resultMessage, contentType){
         response.statusCode = 200;
         response.setHeader('Content-Type', 'text/html');
 
@@ -57,8 +57,8 @@ function wrapRequest(rq,rs){
         response.end();
     }
 
-    function fail(error){
-        response.statusCode = 500;
+    function fail(error, statusCode, contentType){
+        response.statusCode = statusCode;
         response.setHeader('Content-Type', 'application/json');
         const responseBody = { headers, method, url, error};
         response.write(JSON.stringify(responseBody));
