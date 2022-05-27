@@ -1,8 +1,9 @@
 'use strict'
 
-const {routeBuilder} = require('./../routing/configuration')
+const {routeBuilder} = require('../core/configuration')
 
 const mainConfig = {
+    hostname: '127.0.0.1',
     port: 80,
     endpoints: [
             // serve static content

@@ -1,20 +1,17 @@
 'use strict';
 
 const {wrapRequest} = require('./api')
+const {mainConfig} = require("../appconf");
 
 // This is a prototype of a router which process the requests
 // to different paths and applies request handlers
-function Router() {
+function Router(mainConfig) {
 
     // Here we store the key-value pairs where
     // the key is a string and the value is a request handler
     // Each pair represents a path-to-handler function mapping
-    let config = {};
+    const config = mainConfig;
 
-    // receives the config and builds the
-    function loadConfig (config) {
-        console.log(config);
-    }
 
     /**
      * Handles an incoming API request.
@@ -32,7 +29,6 @@ function Router() {
     }
 
     return {
-        loadConfig,
         handleRequest
     };
 

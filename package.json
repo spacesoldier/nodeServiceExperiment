@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/spacesoldier/nodeServiceExperiment/issues"
   },
-  "homepage": "https://github.com/spacesoldier/nodeServiceExperiment#readme"
+  "homepage": "https://github.com/spacesoldier/nodeServiceExperiment#readme",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
 }
