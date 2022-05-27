@@ -1,8 +1,8 @@
 'use strict'
 
-const {Router} = require('./router');
+const {applicationStart} = require('./application-start');
 
 module.exports = {
-    Router
+    applicationStart
 }
 

@@ -70,3 +70,11 @@ function routeBuilder (){
 module.exports = {
     routeBuilder
 }
+
+// Sample usage:
+// receiving events
+// routeBuilder()
+//         .location("/event")
+//         .method("post")
+//         .handlers(() => {})
+//     .build()

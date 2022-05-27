@@ -2,28 +2,33 @@ app-name: "Node.js test service"
 
 servers:
   my-http-server:
+    hosts:
+      - "127.0.0.1"
     port: 80
     protocol: "http"
     endpoints:
       serve-static:
-        - location: "/"
-          method: "get"
-          handler: "serveStatic"
+        location: "/"
+        methods:
+          get:
+            handler: "serveStatic"
 
       session:
         location: "/session"
-          - method: "get"
+        methods:
+          get:
             handler: "newSession"
 
-          - method: "post"
+          post:
             handler: "validateSession"
 
-          - method: "delete"
+          delete:
             handler: "deleteSession"
 
       events:
         location: "/events"
-          - method: "post"
+        methods:
+          post:
             handler: "callService"
 
 
