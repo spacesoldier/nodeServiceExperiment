@@ -1,11 +1,35 @@
 'use strict';
 
-const {readAppConfig} = require("./configuration");
-const http = require("http");
+const {readAppConfig} = require('./configuration');
+const {serverBuilder} = require('./api/servers')
+
+function startyGreeting(){
+    const greeting = '' +
+        '' +
+        '' +
+        '' +
+        '' +
+        '' +
+        '' +
+        '';
+    console.log(greeting);
+}
 
 // This is a prototype of a router which process the requests
 // to different paths and applies request handlers
 function applicationStart(configPath) {
+
+    const runningServers = [];
+
+    function initializeResources(onReadyCallback){
+
+    }
+
+    function startServices(){
+        runningServers.forEach( server => {
+            server.start();
+        })
+    }
 
     function receiveConfig(configReadError, configObject){
         if (configReadError != undefined && configReadError !== null){
@@ -17,6 +41,28 @@ function applicationStart(configPath) {
                     servers
                 } = configObject;
                 console.log(`Starting ${appName.toUpperCase()}..`);
+
+                for (let serverName in servers){
+                    const {
+                        hosts,
+                        port,
+                        protocol,
+                        endpoints
+                    } = servers[serverName];
+                    console.log(`\tConfiguring ${serverName} ${protocol} server on port ${port}..`);
+
+                    runningServers.push(
+                                        serverBuilder()
+                                                .host(hosts)
+                                                .port(port)
+                                                .protocol(protocol)
+                                            .build()
+                    );
+
+                    console.log(`\t\tSetting up endpoints: ${Object.getOwnPropertyNames(endpoints)}`);
+                }
+
+                startServices();
             }
         }
     }
@@ -26,18 +72,6 @@ function applicationStart(configPath) {
     // protocols, endpoints and so on
 
     readAppConfig(configPath, receiveConfig);
-
-    // function start(){
-    //     const server = http.createServer(handleRequest);
-    //
-    //     server.listen(
-    //         mainConfig.port,
-    //         mainConfig.hostname,
-    //         () => {
-    //             console.log(`started server at http://${hostname}:${port}/`);
-    //         }
-    //     );
-    // }
 
     return {
 
