@@ -1,23 +1,14 @@
 'use strict';
 
+const {startyGreeting} = require('./about')
 const {readAppConfig} = require('./configuration');
 const {serverBuilder} = require('./api/servers')
-
-function startyGreeting(){
-    const greeting = '' +
-        '' +
-        '' +
-        '' +
-        '' +
-        '' +
-        '' +
-        '';
-    console.log(greeting);
-}
 
 // This is a prototype of a router which process the requests
 // to different paths and applies request handlers
 function applicationStart(configPath) {
+
+    startyGreeting();
 
     const runningServers = [];
 
@@ -32,10 +23,10 @@ function applicationStart(configPath) {
     }
 
     function receiveConfig(configReadError, configObject){
-        if (configReadError != undefined && configReadError !== null){
+        if (configReadError !== undefined && configReadError !== null){
             console.log(`Could not start app due to an error: \n ${configReadError}`);
         } else {
-            if (configObject != undefined && configObject !== null){
+            if (configObject !== undefined && configObject !== null){
                 const {
                     'app-name': appName,
                     servers
@@ -77,7 +68,7 @@ function applicationStart(configPath) {
 
     };
 
-};
+}
 
 module.exports = {
     applicationStart
