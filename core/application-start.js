@@ -2,7 +2,8 @@
 
 const {startyGreeting} = require('./about')
 const {readAppConfig} = require('./configuration');
-const {serverBuilder} = require('./api/servers')
+const {serverBuilder} = require('./api/servers');
+const {handleRequest} = require('./api/requests');
 
 // This is a prototype of a router which process the requests
 // to different paths and applies request handlers
@@ -47,6 +48,7 @@ function applicationStart(configPath) {
                                                 .host(hosts)
                                                 .port(port)
                                                 .protocol(protocol)
+                                                .handler(handleRequest())
                                             .build()
                     );
 

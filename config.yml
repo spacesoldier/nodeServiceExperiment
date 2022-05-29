@@ -1,27 +1,31 @@
 app-name: "Node.js test service"
 
+# this section describes the server logic provided by the application
+# it consists of server and its endpoints definitions
 servers:
+  # a name of the server inside the application
   my-http-server:
     hosts:
       - "127.0.0.1"
     port: 80
     protocol: "http"
     endpoints:
+      # a name of the endpoint, for example this one serves static content
       serve-static:
         location: "/"
         methods:
           get:
+            # the name of the function which handles the requests to the endpoint
             handler: "serveStatic"
 
+      # an example of the endpoint which accepts requests with several methods
       session:
         location: "/session"
         methods:
           get:
             handler: "newSession"
-
           post:
             handler: "validateSession"
-
           delete:
             handler: "deleteSession"
 
@@ -31,4 +35,14 @@ servers:
           post:
             handler: "callService"
 
+# this section describes the usage of external resources
+# by defining the endpoints to call and how to handle the results
+clients:
+  external-api:
+    type: "rest"
+    url: "http://www.google.com"
+    methods:
+      get:
+        success: "onGoogleGetResult"
+        fail: "onGoogleError"
 

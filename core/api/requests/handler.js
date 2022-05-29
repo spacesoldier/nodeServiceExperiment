@@ -1,6 +1,6 @@
 'use strict'
 
-const {wrapRequest} = require("./index");
+const {wrapRequest} = require("./request-wrapper");
 
 /**
  * Handles an incoming API request.

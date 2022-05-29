@@ -1,10 +1,10 @@
 'use strict'
 
-const {wrapRequest} = require('./request-wrapper')
+const {handleRequest} = require('./requests')
 const {serverBuilder} = require('./servers/server')
 
 module.exports = {
     serverBuilder,
-    wrapRequest
+    handleRequest
 }
 
