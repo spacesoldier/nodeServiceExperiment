@@ -10,6 +10,7 @@ servers:
     port: 80
     protocol: "http"
     endpoints:
+
       # a name of the endpoint, for example this one serves static content
       serve-static:
         location: "/"
@@ -29,6 +30,7 @@ servers:
           delete:
             handler: "deleteSession"
 
+      # this endpoint demonstrates the usage of an external resource
       events:
         location: "/events"
         methods:
@@ -39,7 +41,7 @@ servers:
 # by defining the endpoints to call and how to handle the results
 clients:
   external-api:
-    type: "rest"
+    type: "web"
     url: "http://www.google.com"
     methods:
       get:
