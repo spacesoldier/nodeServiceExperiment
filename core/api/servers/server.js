@@ -1,6 +1,15 @@
 'use strict'
 const http = require("http");
 
+/**
+ *
+ * @param {string} host
+ * @param {number} port
+ * @param protocol
+ * @param {Function} rqHandler
+ * @returns {{start: start}}
+ * @constructor
+ */
 function Server(host, port, protocol, rqHandler){
 
     const serverHostname = host;
@@ -13,6 +22,10 @@ function Server(host, port, protocol, rqHandler){
         console.log(`started server at http://${serverHostname}:${portToListen}/`);
     }
 
+    /**
+     *
+     * @param {string} hostName
+     */
     function initializeSingleServer (hostName){
         let newServerInstance = http.createServer(requestHandler);
         newServerInstance.listen(
@@ -23,6 +36,10 @@ function Server(host, port, protocol, rqHandler){
         serverInstances.push(newServerInstance);
     }
 
+    /**
+     *
+     * @param {Array|string} hostnames
+     */
     function initializeMultipleServers (hostnames){
         hostnames.forEach( hostname => {
             initializeSingleServer(hostname);
@@ -54,7 +71,7 @@ function defaultRequestSink(rq, rs){
     rs.statusCode = 501;
     rs.setHeader('Content-Type', 'text/html');
 
-    rs.write('<html>');
+    rs.write('<html lang="en">');
     rs.write('<body>');
     rs.write(`<h3>Logic not implemented yet..</h3>`);
     rs.write('</body>');
@@ -99,7 +116,7 @@ function serverBuilder(){
     function build(){
         return new Server(
             hostName ?? '127.0.0.1',
-            portNumber ?? '80',
+            portNumber ?? 80,
             srvProtocol ?? 'http',
             requestSink ?? defaultRequestSink
         );
