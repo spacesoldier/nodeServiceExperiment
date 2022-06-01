@@ -2,19 +2,23 @@
 
 const {startyGreeting} = require('./about')
 const {readAppConfig} = require('./configuration');
-const {serverBuilder} = require('./api/servers');
-const {handleRequest} = require('./api/requests');
+const {
+        serverBuilder,
+        methodBuilder,
+        endpointBuilder,
+        handleRequest
+                    } = require('./api');
+const {loadFeatures} = require('./logic');
 
-// This is a prototype of a router which process the requests
-// to different paths and applies request handlers
+// configPath is the path to an application configuration file
+// which declares all the stuff about ports to listen,
+// protocols, endpoints and so on
 function applicationStart(configPath) {
-
-    startyGreeting();
 
     const runningServers = [];
 
-    function initializeResources(onReadyCallback){
-
+    async function initializeResources(){
+        return {};
     }
 
     function startServices(){
@@ -23,7 +27,7 @@ function applicationStart(configPath) {
         })
     }
 
-    function receiveConfig(configReadError, configObject){
+    function applyConfig(configReadError, configObject){
         if (configReadError !== undefined && configReadError !== null){
             console.log(`Could not start app due to an error: \n ${configReadError}`);
         } else {
@@ -32,7 +36,7 @@ function applicationStart(configPath) {
                     'app-name': appName,
                     servers
                 } = configObject;
-                console.log(`Starting ${appName.toUpperCase()}..`);
+                console.log(`[${Date()}] Starting ${appName.toUpperCase()}..`);
 
                 for (let serverName in servers){
                     const {
@@ -41,30 +45,65 @@ function applicationStart(configPath) {
                         protocol,
                         endpoints
                     } = servers[serverName];
-                    console.log(`\tConfiguring ${serverName} ${protocol} server on port ${port}..`);
+                    console.log(`[${Date()}] Configuring ${serverName} ${protocol} server on port ${port}..`);
 
-                    runningServers.push(
-                                        serverBuilder()
-                                                .host(hosts)
-                                                .port(port)
-                                                .protocol(protocol)
-                                                .handler(handleRequest())
-                                            .build()
-                    );
+                    let endpointNames = Object.getOwnPropertyNames(endpoints);
+                    let endpointsDefinitions = [];
 
-                    console.log(`\t\tSetting up endpoints: ${Object.getOwnPropertyNames(endpoints)}`);
+                    console.log(`[${Date()}] Setting up endpoints: ${endpointNames}`);
+
+                    endpointNames.forEach((enpName) => {
+                        let currEnpDef = endpoints[enpName];
+                        let currEnpMethods = [];
+                        let currEnpMethodsDef = currEnpDef.methods;
+                        Object.getOwnPropertyNames(currEnpMethodsDef)
+                            .forEach( methodName => {
+                                currEnpMethods.push(
+                                    methodBuilder()
+                                        .name(methodName.toUpperCase())
+                                        .handlerName(currEnpMethodsDef[methodName].handler)
+                                        .build()
+                                );
+                            });
+                        let newEndpoint = endpointBuilder()
+                                            .name(enpName)
+                                            //.name(enpName.replaceAll('-','_'))
+                                            .location(currEnpDef.location);
+                        currEnpMethods.forEach( mtd => newEndpoint.method(mtd));
+                        newEndpoint = newEndpoint.build();
+
+                        endpointsDefinitions.push(newEndpoint);
+                    });
+
+
+                    let newServer = serverBuilder()
+                                                    .host(hosts)
+                                                    .port(port)
+                                                    .protocol(protocol)
+                                                    .handler(handleRequest)
+                                    .build();
+
+                    runningServers.push(newServer);
+
+
                 }
-
-                startServices();
             }
         }
     }
 
-    // configPath is the path to an application configuration file
-    // which declares all the stuff about ports to listen,
-    // protocols, endpoints and so on
+    // the entrypoint of our application now looks like this
+    startyGreeting()
+        .then(() => readAppConfig(configPath, applyConfig))
+        .then(() => loadFeatures())
+        .then(() => initializeResources())
+        .then(() => startServices())
+        .catch(
+                faultReason => {
+                                    console.log(`cannot start app due to ${faultReason}`);
+                                }
+            )
 
-    readAppConfig(configPath, receiveConfig);
+
 
     return {
 

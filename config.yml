@@ -21,7 +21,7 @@ servers:
 
       # an example of the endpoint which accepts requests with several methods
       session:
-        location: "/session"
+        location: "/session/"
         methods:
           get:
             handler: "newSession"
@@ -42,9 +42,9 @@ servers:
 clients:
   external-api:
     type: "web"
-    url: "http://www.google.com"
+    url: "http://apifon/api/v1"
     methods:
       get:
         success: "onGoogleGetResult"
-        fail: "onGoogleError"
+    fail: "onGoogleError"
 

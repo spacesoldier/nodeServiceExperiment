@@ -1,39 +1,81 @@
 'use strict'
 
+const {RequestMethod} = require('./call-request');
+
 /**
  *
- * @param {string} url
- * @param {string} base
- * @param methods
+ * @param {string} baseUrl
  * @returns {{basePath, urlToCall, callMethods}}
  */
 
-function webClient(url, base, methods) {
-    const urlToCall = url;
-    const basePath = base;
-    const callMethods = methods;
+function webClient(baseUrl) {
+    const urlToCall = baseUrl;
+    const urlParts = baseUrl.split('//');
 
-    const urlParts = url.split('//');
+    const protocol = urlParts[0].toLowerCase();
 
+    function doGet(){
 
+    }
+
+    function doPost(){
+
+    }
+
+    function doPut(){
+
+    }
+
+    function doDelete(){
+
+    }
+
+    // const calls = {
+    //     RequestMethod.GET : doGet,
+    //     RequestMethod.POST: doPost,
+    //     RequestMethod.PUT: doPut,
+    //     RequestMethod.DELETE: doDelete
+    // };
+
+    /**
+     *
+     * @param {CallRequest} callRequest
+     * @returns {Promise<void>}
+     */
+    async function call (callRequest){
+        let {method} = callRequest;
+        if (Object.hasOwnProperty(method)){
+            console.log(`Bingo!!! We'll call ${baseUrl} with ${method} `);
+        }
+    }
 
     return {
         urlToCall,
-        basePath,
-        callMethods
+        protocol,
+        call
     }
 }
 
 function webClientBuilder(){
-    function baseUrl(baseUrl){
+    let clientUrl;
+    function url(baseUrl){
+        clientUrl = baseUrl;
+        return this;
+    }
 
+    function build(){
+        return new webClient(
+            clientUrl,
+            methods
+        );
     }
 
     return {
-        baseUrl
+        url,
+        build
     }
 }
 
 module.exports = {
-
+    webClientBuilder
 }

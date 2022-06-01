@@ -5,7 +5,7 @@ const http = require("http");
  *
  * @param {string} host
  * @param {number} port
- * @param protocol
+ * @param {string} protocol
  * @param {Function} rqHandler
  * @returns {{start: start}}
  * @constructor
@@ -83,6 +83,12 @@ function defaultRequestSink(rq, rs){
 function serverBuilder(){
 
     let hostName;
+
+    /**
+     *
+     * @param {string} hostname
+     * @returns this
+     */
     function host(hostname){
         hostName = hostname;
 
@@ -90,6 +96,12 @@ function serverBuilder(){
     }
 
     let portNumber;
+
+    /**
+     *
+     * @param {number} listenPort
+     * @returns this
+     */
     function port(listenPort){
         portNumber = listenPort;
 
@@ -97,6 +109,12 @@ function serverBuilder(){
     }
 
     let srvProtocol;
+
+    /**
+     *
+     * @param {string} serverProtocol
+     * @returns this
+     */
     function protocol(serverProtocol){
         srvProtocol = serverProtocol;
 
@@ -105,7 +123,8 @@ function serverBuilder(){
 
     let requestSink;
     /**
-     * @param requestHandler Function
+     * @param {function} requestHandler
+     * @returns this
      */
     function handler(requestHandler){
         requestSink = requestHandler;
