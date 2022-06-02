@@ -12,6 +12,23 @@ function FeatureStore(initActions, logic){
 
     const handlers = {};
 
+    /**
+     *
+     * @param {function} action
+     */
+    function addInitAction(action){
+        initSequence.push(action);
+    }
+
+    /**
+     *
+     * @param {string} actionName
+     * @param {function} action
+     */
+    function addFeatureAction(actionName, action){
+        handlers[actionName] = action;
+    }
+
     function initialize (){
         for (let action in initSequence){
             if (action instanceof Function){
@@ -21,6 +38,7 @@ function FeatureStore(initActions, logic){
     };
 
     return {
+        addInitAction,
         initialize,
         handlers
     }

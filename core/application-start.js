@@ -1,12 +1,14 @@
 'use strict';
 
-const {startyGreeting} = require('./about')
+const {startyGreeting} = require('./about');
+const {loggerBuilder,logLevels} = require('./logging');
 const {readAppConfig} = require('./configuration');
 const {
         serverBuilder,
         methodBuilder,
         endpointBuilder,
-        handleRequest
+        handleRequest,
+        webClientBuilder
                     } = require('./api');
 const {loadFeatures} = require('./logic');
 
@@ -14,6 +16,11 @@ const {loadFeatures} = require('./logic');
 // which declares all the stuff about ports to listen,
 // protocols, endpoints and so on
 function applicationStart(configPath) {
+
+    const log = loggerBuilder()
+                        .name('starty')
+                        .level(logLevels.INFO)
+                    .build();
 
     const runningServers = [];
 
@@ -28,15 +35,20 @@ function applicationStart(configPath) {
     }
 
     function applyConfig(configReadError, configObject){
+
+        webClientBuilder()
+                .url('http://www.google.com/')
+            .build();
+
         if (configReadError !== undefined && configReadError !== null){
-            console.log(`Could not start app due to an error: \n ${configReadError}`);
+            log.error(`Could not start app due to an error: \n ${configReadError}`);
         } else {
             if (configObject !== undefined && configObject !== null){
                 const {
                     'app-name': appName,
                     servers
                 } = configObject;
-                console.log(`[${Date()}] Starting ${appName.toUpperCase()}..`);
+                log.info(`Starting ${appName.toUpperCase()}..`);
 
                 for (let serverName in servers){
                     const {
@@ -45,12 +57,12 @@ function applicationStart(configPath) {
                         protocol,
                         endpoints
                     } = servers[serverName];
-                    console.log(`[${Date()}] Configuring ${serverName} ${protocol} server on port ${port}..`);
+                    log.info(`Configuring ${serverName} ${protocol} server on port ${port}..`);
 
                     let endpointNames = Object.getOwnPropertyNames(endpoints);
                     let endpointsDefinitions = [];
 
-                    console.log(`[${Date()}] Setting up endpoints: ${endpointNames}`);
+                    log.info(`Setting up endpoints: ${endpointNames}`);
 
                     endpointNames.forEach((enpName) => {
                         let currEnpDef = endpoints[enpName];
@@ -67,7 +79,6 @@ function applicationStart(configPath) {
                             });
                         let newEndpoint = endpointBuilder()
                                             .name(enpName)
-                                            //.name(enpName.replaceAll('-','_'))
                                             .location(currEnpDef.location);
                         currEnpMethods.forEach( mtd => newEndpoint.method(mtd));
                         newEndpoint = newEndpoint.build();
@@ -99,7 +110,7 @@ function applicationStart(configPath) {
         .then(() => startServices())
         .catch(
                 faultReason => {
-                                    console.log(`cannot start app due to ${faultReason}`);
+                                    log.error(`cannot start app due to ${faultReason}`);
                                 }
             )
 

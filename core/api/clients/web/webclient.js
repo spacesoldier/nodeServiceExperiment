@@ -1,6 +1,6 @@
 'use strict'
 
-const {RequestMethod} = require('./call-request');
+const {httpsMethods} = require('./implementations');
 
 /**
  *
@@ -14,28 +14,6 @@ function webClient(baseUrl) {
 
     const protocol = urlParts[0].toLowerCase();
 
-    function doGet(){
-
-    }
-
-    function doPost(){
-
-    }
-
-    function doPut(){
-
-    }
-
-    function doDelete(){
-
-    }
-
-    // const calls = {
-    //     RequestMethod.GET : doGet,
-    //     RequestMethod.POST: doPost,
-    //     RequestMethod.PUT: doPut,
-    //     RequestMethod.DELETE: doDelete
-    // };
 
     /**
      *
@@ -44,7 +22,7 @@ function webClient(baseUrl) {
      */
     async function call (callRequest){
         let {method} = callRequest;
-        if (Object.hasOwnProperty(method)){
+        if (httpsMethods.hasOwnProperty(method)){
             console.log(`Bingo!!! We'll call ${baseUrl} with ${method} `);
         }
     }
@@ -65,8 +43,7 @@ function webClientBuilder(){
 
     function build(){
         return new webClient(
-            clientUrl,
-            methods
+            clientUrl
         );
     }
 

@@ -1,11 +1,5 @@
 'use strict'
-
-const RequestMethod = Object.freeze({
-    GET: 'get',
-    POST: 'post',
-    PUT: 'put',
-    DELETE: 'delete'
-}) ;
+const methods = require('./methods');
 
 /**
  *
@@ -116,7 +110,7 @@ function requestBuilder(){
 
     function build(){
         return new CallRequest(
-            callMethod ?? RequestMethod.GET,
+            callMethod ?? methods.GET,
             callHeaders ?? [],
             requestPayload ?? {},          // IMHO an empty object could be slightly better than undefined value
             onCallSuccess ?? (()=>{}),
@@ -136,6 +130,5 @@ function requestBuilder(){
 }
 
 module.exports = {
-    RequestMethod,
     requestBuilder
 }
