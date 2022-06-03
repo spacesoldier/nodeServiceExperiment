@@ -2,41 +2,51 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 
-function loadConfig (callback) {
+function loadConfig (readError, configFileContents) {
 
-    function apply(readError, configFileContents){
-        let result = null;
+        let config;
 
         if (readError != undefined && readError !== null){
-            callback(readError, result);
+            return {
+                error: readError
+            };
         }
 
         let error;
 
         try {
-            result = yaml.load(configFileContents);
+            config = yaml.load(configFileContents);
         } catch (ex){
             error = ex;
             console.log(ex);
         }
 
-        callback(error, result);
-    }
+        return {
+            error,
+            config
+        };
 
-    return {
-        apply
-    };
 }
 
-function readAppConfig(config_path, readyCallback){
+// function readAppConfig(config_path, readyCallback){
+//     try {
+//         fs.readFile(config_path, loadConfig(readyCallback).apply);
+//     } catch (error) {
+//         readyCallback({error})
+//     }
+// }
+
+async function readAppConfig(config_path){
     try {
-        fs.readFile(config_path, loadConfig(readyCallback).apply);
-    } catch (error) {
-        readyCallback({error})
+        const data = await fs.promises.readFile(config_path);
+        return {conf: Buffer.from(data)};
+    } catch (err) {
+        return {error: err};
     }
 }
 
 module.exports = {
-    readAppConfig
+    readAppConfig,
+    loadConfig
 }
 

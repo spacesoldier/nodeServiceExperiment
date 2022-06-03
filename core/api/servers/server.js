@@ -1,25 +1,64 @@
 'use strict'
-const http = require("http");
+const http = require('http');
+const https = require('https');
+
+const {loggerBuilder} = require('../../logging');
+
+const supportedProtocols = {
+    HTTP: 'http',
+    HTTPS: 'https'
+}
+
+const serverImplementations = {
+    [supportedProtocols.HTTP]: http,
+    [supportedProtocols.HTTPS]: https
+}
 
 /**
  *
  * @param {string} host
  * @param {number} port
  * @param {string} protocol
+ * @param {Array} endpoints
  * @param {Function} rqHandler
  * @returns {{start: start}}
  * @constructor
  */
-function Server(host, port, protocol, rqHandler){
+function Server(host, port, protocol, endpoints, rqHandler){
 
-    const serverHostname = host;
+    const serverHostname_s = host;
     const portToListen = port;
+    const serverProtocol = protocol;
+    const exposedEndpoints = endpoints;
     const requestHandler = rqHandler;
 
     const serverInstances = [];
 
-    function onServerStart(){
-        console.log(`started server at http://${serverHostname}:${portToListen}/`);
+    const log = loggerBuilder()
+                    .name(`${serverProtocol} server (${portToListen})`)
+                    .level('info')
+                .build();
+
+    /**
+     *
+     * @param {number} srvNum
+     */
+    function onServerStart(srvNum){
+        const serverNumber = srvNum;
+
+        function apply(){
+            if (Array.isArray(serverHostname_s)){
+                let logMsg = `started server at `;
+                logMsg += ` http://${serverHostname_s[serverNumber]}:${portToListen}/`;
+                log.info(logMsg);
+            } else {
+                log.info(`started server at http://${serverHostname_s}:${portToListen}/`);
+            }
+        }
+
+        return {
+            apply
+        }
     }
 
     /**
@@ -27,13 +66,19 @@ function Server(host, port, protocol, rqHandler){
      * @param {string} hostName
      */
     function initializeSingleServer (hostName){
-        let newServerInstance = http.createServer(requestHandler);
-        newServerInstance.listen(
-            portToListen,
-            hostName,
-            onServerStart
-        );
-        serverInstances.push(newServerInstance);
+
+        if (serverProtocol.toUpperCase() in supportedProtocols){
+            let newServerInstance = serverImplementations[serverProtocol].createServer(requestHandler);
+            newServerInstance.listen(
+                portToListen,
+                hostName,
+                onServerStart(serverInstances.length).apply
+            );
+            serverInstances.push(newServerInstance);
+        } else {
+            log.error(`unsupported protocol ${serverProtocol}`);
+        }
+
     }
 
     /**
@@ -47,14 +92,15 @@ function Server(host, port, protocol, rqHandler){
     }
 
     function start() {
-        if (Array.isArray(serverHostname)) {
-            initializeMultipleServers(serverHostname);
+        if (Array.isArray(serverHostname_s)) {
+            initializeMultipleServers(serverHostname_s);
         } else {
-            initializeSingleServer(serverHostname);
+            initializeSingleServer(serverHostname_s);
         }
     }
 
     return {
+        exposedEndpoints,
         start
     }
 
@@ -121,6 +167,18 @@ function serverBuilder(){
         return this;
     }
 
+    let exposeEndpoints;
+
+    /**
+     *
+     * @param {Array} provideEndpoints
+     * @returns this
+     */
+    function endpoints(provideEndpoints){
+        exposeEndpoints = provideEndpoints;
+        return this;
+    }
+
     let requestSink;
     /**
      * @param {function} requestHandler
@@ -132,11 +190,13 @@ function serverBuilder(){
         return this;
     }
 
+
     function build(){
         return new Server(
             hostName ?? '127.0.0.1',
             portNumber ?? 80,
             srvProtocol ?? 'http',
+            exposeEndpoints ?? [],
             requestSink ?? defaultRequestSink
         );
     }
@@ -145,6 +205,7 @@ function serverBuilder(){
         host,
         port,
         protocol,
+        endpoints,
         handler,
         build
     }
@@ -153,5 +214,6 @@ function serverBuilder(){
 
 
 module.exports = {
-    serverBuilder
+    serverBuilder,
+    defaultRequestSink
 }

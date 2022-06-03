@@ -1,6 +1,6 @@
 'use strict'
-const {} = require('./router');
+const {routerBuilder} = require('./router');
 
 module.exports = {
-
+    routerBuilder
 }

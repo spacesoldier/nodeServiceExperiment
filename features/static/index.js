@@ -1,6 +1,7 @@
 'use strict'
-const {serveStatic} = require('./serve-static')
+const {init, serveStatic} = require('./serve-static')
 
 module.exports = {
+    init,
     serveStatic
 }

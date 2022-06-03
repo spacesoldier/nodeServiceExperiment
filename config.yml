@@ -42,9 +42,10 @@ servers:
 clients:
   external-api:
     type: "web"
-    url: "http://apifon/api/v1"
+    url: "http://www.google.com/"
     methods:
       get:
+        input-type: "googleApiRequest"
         success: "onGoogleGetResult"
-    fail: "onGoogleError"
+        fail: "onGoogleError"
 
