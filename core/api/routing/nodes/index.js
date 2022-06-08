@@ -1,7 +1,8 @@
 'use strict'
 
-const {routeNodeBuilder} = require('./route-node')
+const {routeNodeBuilder, routeErrors} = require('./route-node')
 
 module.exports = {
-    routeNodeBuilder
+    routeNodeBuilder,
+    routeErrors
 }

@@ -1,6 +1,12 @@
 'use strict'
 
-const {httpsMethods} = require('./implementations');
+const {httpMethods, httpsMethods} = require('./implementations');
+const protocols = require('./protocols');
+
+const clientImplementations = {
+    [protocols.HTTP] : httpMethods,
+    [protocols.HTTPS] : httpsMethods
+}
 
 /**
  *
@@ -14,6 +20,7 @@ function webClient(baseUrl) {
 
     const protocol = urlParts[0].toLowerCase();
 
+    const implementation = clientImplementations[protocol];
 
     /**
      *
@@ -22,9 +29,12 @@ function webClient(baseUrl) {
      */
     async function call (callRequest){
         let {method} = callRequest;
-        if (httpsMethods.hasOwnProperty(method)){
-            console.log(`Bingo!!! We'll call ${baseUrl} with ${method} `);
+        if (implementation !== undefined){
+            if (method in implementation){
+                console.log(`Bingo!!! We'll call ${baseUrl} with ${method} `);
+            }
         }
+
     }
 
     return {

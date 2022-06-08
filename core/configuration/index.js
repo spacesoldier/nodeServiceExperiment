@@ -1,10 +1,8 @@
 'use strict'
 
-const {readAppConfig,loadConfig} = require('./config');
-const {routeBuilder} = require('./route')
+const {readAppConfig,parseConfig} = require('./config');
 
 module.exports = {
-    routeBuilder,
     readAppConfig,
-    loadConfig
+    parseConfig
 }

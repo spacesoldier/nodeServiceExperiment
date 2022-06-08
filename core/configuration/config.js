@@ -2,44 +2,39 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 
-function loadConfig (readError, configFileContents) {
+function parseConfig (inputs) {
+    let config;
+    let {confContents} = inputs;
 
-        let config;
-
-        if (readError != undefined && readError !== null){
-            return {
-                error: readError
-            };
-        }
-
-        let error;
-
+    if (confContents !== undefined){
         try {
-            config = yaml.load(configFileContents);
+            config = yaml.load(confContents);
+            return {
+                parsedConf: config
+            };
         } catch (ex){
-            error = ex;
             console.log(ex);
+            return {
+                error: ex
+            }
         }
-
+    } else {
         return {
-            error,
-            config
-        };
-
+            error: `no config contents provided for parsing`
+        }
+    }
 }
 
-// function readAppConfig(config_path, readyCallback){
-//     try {
-//         fs.readFile(config_path, loadConfig(readyCallback).apply);
-//     } catch (error) {
-//         readyCallback({error})
-//     }
-// }
+async function readAppConfig(inputs){
+    let {confPath} = inputs;
 
-async function readAppConfig(config_path){
+    if (confPath === undefined){
+        confPath = './config.yml'
+    }
+
     try {
-        const data = await fs.promises.readFile(config_path);
-        return {conf: Buffer.from(data)};
+        const data = await fs.promises.readFile(confPath);
+        return {confContents: Buffer.from(data)};
     } catch (err) {
         return {error: err};
     }
@@ -47,6 +42,6 @@ async function readAppConfig(config_path){
 
 module.exports = {
     readAppConfig,
-    loadConfig
+    parseConfig
 }
 

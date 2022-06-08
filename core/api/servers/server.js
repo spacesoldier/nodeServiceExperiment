@@ -24,12 +24,11 @@ const serverImplementations = {
  * @returns {{start: start}}
  * @constructor
  */
-function Server(host, port, protocol, endpoints, rqHandler){
+function Server(host, port, protocol, rqHandler){
 
     const serverHostname_s = host;
     const portToListen = port;
     const serverProtocol = protocol;
-    const exposedEndpoints = endpoints;
     const requestHandler = rqHandler;
 
     const serverInstances = [];
@@ -100,7 +99,6 @@ function Server(host, port, protocol, endpoints, rqHandler){
     }
 
     return {
-        exposedEndpoints,
         start
     }
 
@@ -196,7 +194,6 @@ function serverBuilder(){
             hostName ?? '127.0.0.1',
             portNumber ?? 80,
             srvProtocol ?? 'http',
-            exposeEndpoints ?? [],
             requestSink ?? defaultRequestSink
         );
     }

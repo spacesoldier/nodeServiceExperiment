@@ -1,18 +1,17 @@
 'use strict'
 
-const {handleRequest} = require('./requests');
-const {serverBuilder, defaultRequestSink} = require('./servers');
-const {methodBuilder,endpointBuilder} = require('./endpoints');
-const {webClientBuilder} = require('./clients');
-const {routerBuilder} = require('./routing');
+const {initServers, startServices} = require('./servers');
+const {extractEndpoints} = require('./endpoints');
+const {webClientBuilder, initClients} = require('./clients');
+const {routerBuilder, initRouters} = require('./routing');
 
 module.exports = {
-    serverBuilder,
-    defaultRequestSink,
-    methodBuilder,
-    endpointBuilder,
-    handleRequest,
+    extractEndpoints,
     webClientBuilder,
-    routerBuilder
+    initClients,
+    routerBuilder,
+    initRouters,
+    initServers,
+    startServices
 }
 

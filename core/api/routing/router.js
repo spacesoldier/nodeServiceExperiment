@@ -1,6 +1,6 @@
 'use strict'
 
-const {routeNodeBuilder} = require('./nodes');
+const {routeNodeBuilder, routeErrors} = require('./nodes');
 
 // This is a prototype of a router which process the requests
 // to different paths and applies request handlers
@@ -20,8 +20,28 @@ function Router(){
         routeTree.addHandler(path, method, requestHandler);
     }
 
+    /**
+     *
+     * @param {string} path
+     * @param {string} method
+     * @returns {{error: string}|{handler: {Function}}}
+     */
+    function findRoute(path, method){
+        let {error, handler: requestHandler} = routeTree.findHandler(path, method);
+        if (error != undefined){
+            return {
+                error: routeErrors.NOT_FOUND
+            }
+        } else {
+            return {
+                handler: requestHandler
+            }
+        }
+    }
+
     return {
-        addRoute
+        addRoute,
+        findRoute
     }
 }
 

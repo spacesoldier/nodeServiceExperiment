@@ -7,7 +7,7 @@ servers:
   my-http-server:
     hosts:
       - "127.0.0.1"
-    port: 80
+    port: 8080
     protocol: "http"
     endpoints:
 
@@ -21,7 +21,7 @@ servers:
 
       # an example of the endpoint which accepts requests with several methods
       session:
-        location: "/session/"
+        location: "/session"
         methods:
           get:
             handler: "newSession"
@@ -45,7 +45,7 @@ clients:
     url: "http://www.google.com/"
     methods:
       get:
-        input-type: "googleApiRequest"
+        input: "googleApiRequest"
         success: "onGoogleGetResult"
         fail: "onGoogleError"
 

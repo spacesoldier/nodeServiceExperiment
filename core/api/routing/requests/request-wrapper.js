@@ -8,13 +8,11 @@ const {
 } = require('_http_server');
 
 
-
 /**
- * Returns a new instance of `RequestWrapper`.
- * @param {IncomingMessage} [rq]
- * @param {ServerResponse} [rs]
- * @returns {[Function]}
- * @type {(rq: IncomingMessage, rs: ServerResponse) => [Function]}
+ *
+ * @param rq
+ * @param rs
+ * @returns {{getUrl: (function(): *), fail: fail, getHeaders: (function(): *), requestId: (function(): string), getMethod: (function(): *), ok: ok}}
  */
 function wrapRequest(rq,rs){
 
@@ -44,9 +42,9 @@ function wrapRequest(rq,rs){
         return rqId;
     }
 
-    function ok(resultMessage, contentType){
+    function ok(resultMessage, contentType='text/html'){
         response.statusCode = 200;
-        response.setHeader('Content-Type', 'text/html');
+        response.setHeader('Content-Type', contentType);
 
         response.write('<html>');
         response.write('<body>');
@@ -57,9 +55,9 @@ function wrapRequest(rq,rs){
         response.end();
     }
 
-    function fail(error, statusCode, contentType){
+    function fail(statusCode, error, contentType='application/json'){
         response.statusCode = statusCode;
-        response.setHeader('Content-Type', 'application/json');
+        response.setHeader('Content-Type', contentType);
         const responseBody = { headers, method, url, error};
         response.write(JSON.stringify(responseBody));
         response.end();

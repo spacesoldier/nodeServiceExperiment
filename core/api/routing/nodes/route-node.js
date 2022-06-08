@@ -15,7 +15,7 @@ const routeTreeRootLevelIndex = 1;
  *
  * @param {string} name
  * @param {number} level
- * @returns {{nodeName, addHandler: addHandler, nodeLevel}}
+ * @returns {{nodeName, addHandler: addHandler, nodeLevel, findHandler: (function((string|Array<string>), string): {})}}
  * @constructor
  */
 function RouteNode(name, level){
@@ -104,12 +104,12 @@ function RouteNode(name, level){
      * @param {string} method
      */
     function findHandler(path, method){
-        let handler;
+        let requestHandler;
         let searchPath = takePath(path);
         if (searchPath.length == nodeLevel){
             if (nodeName === searchPath[nodeLevel-1]){
                 if (method in requestHandlers){
-                    handler = requestHandlers[method];
+                    requestHandler = requestHandlers[method];
                 }
 
             } else {
@@ -118,12 +118,14 @@ function RouteNode(name, level){
 
         } else {
             let nodeFromLevelBelow = findChildNode(searchPath[nodeLevel]);
-            handler = nodeFromLevelBelow.findHandler(path,method);
+            if (nodeFromLevelBelow !== undefined){
+                requestHandler = nodeFromLevelBelow.findHandler(path,method);
+            }
         }
 
         return {
             ...(
-                    (handler && {result: handler})
+                    (requestHandler && {handler: requestHandler})
                     ??
                     {error: routeErrors.NOT_FOUND}
                 )
@@ -166,7 +168,7 @@ function routeNodeBuilder(){
 
     /**
      *
-     * @returns {{nodeName, addHandler: addHandler, nodeLevel}}
+     * @returns {{nodeName, addHandler: addHandler, nodeLevel, findHandler: (function((string|Array<string>), string): {})}}
      */
     function build(){
         return new RouteNode(

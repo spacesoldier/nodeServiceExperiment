@@ -1,7 +1,8 @@
 'use strict'
 
-const {serverBuilder} = require('./server')
+const {initServers, startServices} = require('./construct');
 
 module.exports = {
-    serverBuilder
+    initServers,
+    startServices
 }

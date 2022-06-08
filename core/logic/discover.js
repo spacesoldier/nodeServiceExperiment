@@ -21,13 +21,17 @@ async function readFeatureDir(pathToFeaturesDir){
     try {
         return promises.readdir(pathToFeaturesDir);
     } catch (err){
-        log.error(`problem reading ./features directory: `+err);
+        let errorMsg = `Cannot start the application due to problem reading ./features directory: `+err;
+        log.error(errorMsg);
+        return {
+            readError: errorMsg
+        }
     }
 }
 
 /**
  *
- * @param {Object} featureModules
+ * @param {FeatureStore} featureModules
  */
 function buildFeatures(featureModules){
 
@@ -45,7 +49,6 @@ function buildFeatures(featureModules){
 
     }
 
-
     return featureStore;
 }
 
@@ -54,19 +57,50 @@ function buildFeatures(featureModules){
  * @param {string} whereToGetSomeFeatures
  * @returns {Promise<{{initializeFeatures: initializeFeatures, addInitAction: addInitAction, addFeatureFunction: addFeatureFunction, featureFunctions: {}}}>}
  */
-async function loadFeatures(whereToGetSomeFeatures){
-    const featuresBasePath = whereToGetSomeFeatures ?? './features';
+async function loadFeatures(inputs){
+    let {featurePath} = inputs;
+
+    const featuresBasePath = featurePath ?? './features';
     let allFeatureDirs = await readFeatureDir(featuresBasePath);
 
-    const featureModules = {};
+    let {readError} = allFeatureDirs;
 
-    allFeatureDirs.forEach(featureDir => {
-        featureModules[featureDir] = require('../../'.concat(featuresBasePath,'/',featureDir));
-    });
+    if (readError !== undefined){
+        return {
+            error: readError
+        };
+    } else {
+        const featureModules = {};
 
-    return buildFeatures(featureModules);
+        allFeatureDirs.forEach(featureDir => {
+            featureModules[featureDir] = require('../../'.concat(featuresBasePath,'/',featureDir));
+        });
+
+        return {
+            featureStore: buildFeatures(featureModules)
+        };
+    }
+
+}
+
+/**
+ *
+ * @param featureStore
+ */
+async function initFeatures(inputs){
+    let {featureStore} = inputs;
+    if (featureStore !== undefined){
+        await featureStore.initializeFeatures();
+    } else {
+        return {
+            error: `no features to init`
+        }
+    }
+
+    return {};
 }
 
 module.exports = {
-    loadFeatures
+    loadFeatures,
+    initFeatures
 }

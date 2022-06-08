@@ -1,9 +1,7 @@
 'use strict'
 
-const {endpointBuilder} = require('./endpoint');
-const {methodBuilder} = require('./method');
+const {extractEndpoints} = require('./construct');
 
 module.exports = {
-    methodBuilder,
-    endpointBuilder
+    extractEndpoints
 }

@@ -1,9 +1,12 @@
 'use strict'
 
-const {loadFeatures} = require('./discover')
-const {featureStoreBuilder} = require('./feature')
+const {loadFeatures, initFeatures} = require('./discover');
+const {featureStoreBuilder} = require('./feature');
+const {StateConstructor} = require('./starter');
 
 module.exports = {
     loadFeatures,
-    featureStoreBuilder
+    initFeatures,
+    featureStoreBuilder,
+    StateConstructor
 }
