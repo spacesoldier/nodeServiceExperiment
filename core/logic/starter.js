@@ -21,22 +21,22 @@ function StateConstructor(initialState){
 
         if (stateError !== undefined){
             currentState = {
-                ...(currentState),
+                ...currentState,
                 error: stateError
             }
         } else {
             let stateIncrement;
             try {
                 stateIncrement = await callback({
-                    ...(currentState),
-                    ...(inputs)
+                    ...currentState,
+                    ...inputs
                 });
             } catch (ex) {
                 stateIncrement = { error: ex }
             }
             currentState = {
-                ...(currentState),
-                ...(stateIncrement)
+                ...currentState,
+                ...stateIncrement
             }
         }
 
@@ -44,7 +44,7 @@ function StateConstructor(initialState){
     }
 
     return {
-        ...(currentState),
+        ...currentState,
         incrementState
     }
 

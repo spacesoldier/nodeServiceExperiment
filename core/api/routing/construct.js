@@ -1,7 +1,7 @@
 const {loggerBuilder, logLevels} = require("../../logging");
 
 const {routerBuilder} = require('./router');
-const {routedRequestHandler} = require('./requests/');
+const {routedRequestHandler,processMessage} = require('./requests');
 
 const log = loggerBuilder()
                     .name('router')
@@ -73,14 +73,46 @@ function initSingleRouter(routerDef){
 }
 
 
+function decorateClientsHandlers(internalClients) {
+    for (let clientName in internalClients) {
+        let {
+            getSuccessCall,
+            getFailCall,
+            setSuccessCall,
+            setFailCall
+        } = internalClients[clientName];
 
+        if (
+            getSuccessCall !== undefined && getSuccessCall instanceof Function
+            && setSuccessCall !== undefined && setSuccessCall instanceof Function
+        ) {
+            setSuccessCall(processMessage(getSuccessCall(), internalClients).process);
+        }
+
+        if (
+            getFailCall !== undefined && getFailCall instanceof Function
+            && setFailCall !== undefined && setFailCall instanceof Function
+        ) {
+            setFailCall(processMessage(getFailCall(), internalClients).process);
+        }
+    }
+
+    return internalClients;
+}
 
 function initRouters(inputs){
 
     let {
         featureStore,
+        externalClients,
         serverEndpoints
     } = inputs;
+
+    let internalSinks = {
+        ...externalClients
+    }
+
+    internalSinks = decorateClientsHandlers(internalSinks);
 
     if (featureStore !== undefined && serverEndpoints !== undefined){
         let routerDefs = {};
@@ -93,7 +125,8 @@ function initRouters(inputs){
                 });
                 requestHandlers[serverName] = routedRequestHandler(
                                                     serverName,
-                                                    routerDefs[serverName].findRoute
+                                                    routerDefs[serverName].findRoute,
+                                                    internalSinks
                                                 );
         }
 

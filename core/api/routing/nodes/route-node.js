@@ -57,17 +57,23 @@ function RouteNode(name, level){
      */
     function findChildNode(name, createNewIfNotFound = false){
         let childNode;
-        childNodes.every(currentNode => {
-           if (currentNode.nodeName === name){
-               childNode = currentNode;
-               return false;
-           }
-        });
+
+        for (let node of childNodes){
+            if (node.nodeName == name){
+                childNode = node;
+                break;
+            }
+        }
+
         if (createNewIfNotFound){
-            return childNode ?? routeNodeBuilder()
-                                            .name(name)
-                                            .level(nodeLevel+1)
-                                        .build();
+            if (childNode === undefined){
+                childNode = routeNodeBuilder()
+                                        .name(name)
+                                        .level(nodeLevel+1)
+                                    .build();
+                childNodes.push(childNode);
+            }
+            return childNode;
         } else {
             return childNode;
         }
@@ -121,6 +127,12 @@ function RouteNode(name, level){
             if (nodeFromLevelBelow !== undefined){
                 requestHandler = nodeFromLevelBelow.findHandler(path,method);
             }
+        }
+
+        // fix the recursive return by unpacking the below call result:
+        let {handler} = requestHandler;
+        if (handler !== undefined){
+            requestHandler = handler;
         }
 
         return {

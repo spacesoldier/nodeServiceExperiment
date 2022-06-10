@@ -1,8 +1,11 @@
 'use strict'
 
 const {applicationStart} = require('./application-start');
+const {loggerBuilder, logLevels} = require('./logging')
 
 module.exports = {
-    applicationStart
+    applicationStart,
+    logLevels,
+    loggerBuilder
 }
 

@@ -43,6 +43,7 @@ clients:
   external-api:
     type: "web"
     url: "http://www.google.com/"
+    port: 80
     methods:
       get:
         input: "googleApiRequest"
