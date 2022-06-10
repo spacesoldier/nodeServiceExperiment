@@ -54,8 +54,6 @@ function doGet(url, options, onSuccess, onFail, payload){
 function doPost(url, options, onSuccess, onFail, payload){
     options = checkHttpOptions(options, 'POST');
 
-    const responseParts = [];
-
     let req = performHttpRequest(url, options, onSuccess, onFail);
     req.on('error', err => {
         onFail(err);
