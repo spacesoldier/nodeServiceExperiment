@@ -1,6 +1,12 @@
 'use strict'
 
-function newSession(){
+function newSession(msg){
+
+    let ourMessage = msg.payload;
+
+    msg.payload = 'heeeeeeeeeeeeeeeeeey!!!';
+
+    return msg;
 
 }
 
