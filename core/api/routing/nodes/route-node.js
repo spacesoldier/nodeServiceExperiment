@@ -129,10 +129,12 @@ function RouteNode(name, level){
             }
         }
 
-        // fix the recursive return by unpacking the below call result:
-        let {handler} = requestHandler;
-        if (handler !== undefined){
-            requestHandler = handler;
+        if (requestHandler !== undefined){
+            // fix the recursive return by unpacking the below call result:
+            let {handler} = requestHandler;
+            if (handler !== undefined){
+                requestHandler = handler;
+            }
         }
 
         return {
@@ -184,8 +186,8 @@ function routeNodeBuilder(){
      */
     function build(){
         return new RouteNode(
-          newNodeName ?? '/',
-          newNodeLevel ?? routeTreeRootLevelIndex
+            newNodeName ?? '/',
+            newNodeLevel ?? routeTreeRootLevelIndex
         );
     }
 
