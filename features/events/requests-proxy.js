@@ -1,6 +1,6 @@
 'use strict'
 
-const {loggerBuilder, logLevels} = require("../../core/logging");
+const {loggerBuilder, logLevels} = require("../../starty/logging");
 const log = loggerBuilder()
                     .name('proxy service')
                     .level(logLevels.INFO)

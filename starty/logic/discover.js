@@ -6,9 +6,9 @@ const {loggerBuilder} = require('../logging');
 const {featureStoreBuilder} = require('./feature');
 
 const log = loggerBuilder()
-                        .name('feature loader')
-                        .level('info')
-                    .build();
+                    .name('feature loader')
+                    .level('info')
+                .build();
 
 const featureStore = featureStoreBuilder().build();
 
