@@ -6,28 +6,52 @@ const log = loggerBuilder()
                     .level(logLevels.INFO)
                 .build();
 
+// function callService(){
+//     return {
+//         payload: 'beeep'
+//     }
+// }
+
 /**
  *
- * @param {{ msgId: string,request: IncomingMessage, response: ServerResponse, payload}} msg
- * @returns {*}
+ * @param {{ msgId: string,request: {headers: {object}, query: {object}}, response: {object}, payload}} msg
+ * @returns {{ msgId: string,request: {headers: {object}, query: {object}}, response: {headers:{object}}, payload:{object}}} msg
  */
 function callService(msg){
 
-    log.info(msg.payload);
+    //log.info(msg.payload);
+
+    if (msg.request.query !== undefined){
+        let queryStr = JSON.stringify(msg.request.query);
+        log.info(`query ${queryStr}`);
+    }
 
     let sendSomeData = {
         message: 'call me later',
         phone: '12345678'
     }
 
+
+    // we do not plan to return a result here
+    delete msg.payload;
+
+    // fill a request to external service instead
     msg.googleApiRequest = {
+        ...(sendSomeData)
+    };
+
+    // and set proper headers for external API request
+    // replacing originally received headers
+    msg.request = {
         headers: {
             'content-type': 'application/json'
         },
-        requestBody: JSON.stringify(sendSomeData)
-    };
+        query: {
+            foo: 'bar',
+            buzz: 'baz'
+        }
 
-    delete msg.payload;
+    };
 
     return msg;
 
@@ -54,6 +78,9 @@ function onGoogleError(msg){
     log.info(`got the error: ${msg.payload}`);
 
     return msg;
+
+
+
 }
 
 module.exports = {
