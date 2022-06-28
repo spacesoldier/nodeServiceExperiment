@@ -6,8 +6,8 @@ servers:
   # a name of the server inside the application
   my-http-server:
     hosts:
-      - "127.0.0.1"
-    port: 8080
+      - ${HTTP_HOST:"127.0.0.1"}
+    port: ${LISTEN_PORT: 8080}
     protocol: "http"
     endpoints:
 
@@ -43,7 +43,7 @@ clients:
   external-api:
     type: "web"
     url: "http://localhost/session"
-    port: 8080
+    port: ${LISTEN_PORT:8080}
     methods:
       get:
         input: "googleApiRequest"
